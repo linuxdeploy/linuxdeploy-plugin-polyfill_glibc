@@ -1,0 +1,3 @@
+/target
+*.AppImage*
+polyfill-glibc/
