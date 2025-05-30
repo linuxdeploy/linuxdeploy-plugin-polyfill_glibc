@@ -15,7 +15,7 @@ struct Args {
     appdir: Option<PathBuf>,
 
     #[arg(long, env = "GLIBC_VERSION")]
-    glibc_version: String,
+    glibc_version: Option<String>,
 
     #[arg(long, default_value_t = false)]
     plugin_type: bool,
@@ -130,11 +130,18 @@ fn main() {
     let libs_path = appdir.join("usr/lib/*");
     let bins_path = appdir.join("usr/lib/*");
 
+    if !args.glibc_version.is_some() {
+        error!("glibc version not specified");
+        exit(1);
+    }
+
+    let glibc_version = args.glibc_version.unwrap();
+
     info!("Processing libs");
     let libs = glob_files(libs_path.to_str().unwrap()).unwrap();
-    process(libs, args.glibc_version.as_str());
+    process(libs, glibc_version.as_str());
 
     info!("Processing bins");
     let bins = glob_files(bins_path.to_str().unwrap()).unwrap();
-    process(bins, args.glibc_version.as_str());
+    process(bins, glibc_version.as_str());
 }
